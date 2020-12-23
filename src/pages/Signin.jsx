@@ -2,9 +2,7 @@ import { Redirect } from 'react-router-dom';
 import Signin from '../components/Signin';
 import withToken from '../hocs/withToken';
 
-function SigninPage(props) {
-  const { token } = props;
-
+function SigninPage({ token }) {
   if (token !== null) {
     return <Redirect to="/" />;
   }
