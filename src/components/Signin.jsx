@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Input, Button } from 'antd';
 import styles from './Signin.module.css';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
 // class 컴포넌트에서 사용하는 createRef 함수
 class Signin extends React.Component {
@@ -9,12 +10,13 @@ class Signin extends React.Component {
 
   state = {
     email: '',
+    loading: false,
   };
 
   render() {
-    const isEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(
-      this.state.email,
-    );
+    const { email, loading } = this.state;
+
+    const isEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(email);
 
     return (
       <form>
@@ -63,7 +65,7 @@ class Signin extends React.Component {
                 <div className={styles.button_area}>
                   <Button
                     size="large"
-                    loading={false}
+                    loading={loading}
                     className={styles.button}
                     onClick={this.click}
                     disabled={!isEmail}
@@ -99,13 +101,22 @@ class Signin extends React.Component {
 
     try {
       // 호출 시작 => 로딩 시작
+      this.setState({ loading: true });
       const response = await axios.post('https://api.marktube.tv/v1/me', {
         email,
         password,
       });
+      // sleep
+      await sleep(2000);
+      this.setState({ loading: false });
       // 호출 완료 (정상) => 로딩 끝
-      console.log(response);
+      console.log(response.data.token);
+      // 토큰을 브라우저 어딘가에 저장한다.
+      localStorage.setItem('token', response.data.token);
+      // 페이지를 이동한다.
+      this.props.history.push('/');
     } catch (error) {
+      this.setState({ loading: false });
       // 호출 완료 (에러) => 로딩 끝
       console.log(error);
     }
@@ -116,4 +127,12 @@ class Signin extends React.Component {
   };
 }
 
-export default Signin;
+export default withRouter(Signin);
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}

@@ -11,10 +11,12 @@
 export default function withToken(Component) {
   function NewComponent(props) {
     const token = localStorage.getItem('token');
-    return <Component token={token} />;
+    return <Component {...props} token={token} />;
   }
 
-  NewComponent.displayName = `${Component.displayName} <= withToken`;
+  NewComponent.displayName = `withToken(${
+    Component.displayName || Component.name
+  })`;
 
   return NewComponent;
 }
