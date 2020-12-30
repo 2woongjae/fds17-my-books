@@ -6,14 +6,8 @@ import { Button } from 'antd';
 import BookItem from './BookItem';
 
 export default class BookList extends React.Component {
-  state = {
-    loading: false,
-    error: null,
-  };
-
   render() {
-    const { loading, error } = this.state;
-    const { books } = this.props;
+    const { books, loading, error } = this.props;
 
     if (error !== null) {
       const errorType = error.response.data.error;
@@ -27,7 +21,7 @@ export default class BookList extends React.Component {
               <Button
                 shape="circle"
                 icon={<ReloadOutlined />}
-                onClick={this.reload}
+                onClick={this.getBooks}
               />
             </p>
           </div>
@@ -49,8 +43,7 @@ export default class BookList extends React.Component {
 
   getBooks = async () => {
     try {
-      // 서버에 책 리스트 다오.
-      this.setState({ loading: true });
+      this.props.startBooks();
 
       await sleep(2000);
 
@@ -60,22 +53,14 @@ export default class BookList extends React.Component {
         },
       });
 
-      // 받은 책 리스트로 다시 랜더 해줘 <= state
-      this.setState({ loading: false });
-      // 리덕스한테 books: response.data, 를 넣어주기
-      this.props.setBooks(response.data);
+      this.props.successBooks(response.data);
     } catch (error) {
       console.log(error);
-      this.setState({ loading: false, error });
+      this.props.failBooks(error);
     }
   };
 
   async componentDidMount() {
     await this.getBooks();
   }
-
-  reload = async () => {
-    this.setState({ error: null });
-    await this.getBooks();
-  };
 }
