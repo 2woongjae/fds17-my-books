@@ -37,3 +37,14 @@ export const getBooksThunk = (token) => async (dispatch, getState) => {
     dispatch(bookFail(error));
   }
 };
+
+// promise
+export const BOOKS = 'BOOKS';
+export const BOOKS_PENDING = 'BOOKS_PENDING';
+export const BOOKS_FULFILLED = 'BOOKS_FULFILLED';
+export const BOOKS_REJECTED = 'BOOKS_REJECTED';
+
+export const getBooksPromise = (token) => ({
+  type: BOOKS,
+  payload: BookService.getBooks(token + 'j'),
+});
