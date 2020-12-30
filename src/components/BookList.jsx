@@ -1,66 +1,70 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { sleep } from '../utils';
 import { LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import BookItem from './BookItem';
 
-export default class BookList extends React.Component {
-  render() {
-    const { books, loading, error } = this.props;
+export default function BookList({
+  books,
+  loading,
+  error,
+  startBooks,
+  successBooks,
+  failBooks,
+  token,
+}) {
+  useEffect(() => {
+    async function getBooks() {
+      try {
+        startBooks();
 
-    if (error !== null) {
-      const errorType = error.response.data.error;
+        await sleep(2000);
 
-      if (errorType === 'INVALID_TOKEN') {
-        return (
-          <div>
-            <h1>Book List {loading && <LoadingOutlined />}</h1>
-            <p>
-              유효하지 않은 토큰 입니다.{' '}
-              <Button
-                shape="circle"
-                icon={<ReloadOutlined />}
-                onClick={this.getBooks}
-              />
-            </p>
-          </div>
-        );
+        const response = await axios.get('https://api.marktube.tv/v1/book', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        successBooks(response.data);
+      } catch (error) {
+        console.log(error);
+        failBooks(error);
       }
     }
 
-    return (
-      <div>
-        <h1>Book List {loading && <LoadingOutlined />}</h1>
-        {books.length === 0 && <p>데이터가 없습니다.</p>}
-        {books.length !== 0 &&
-          books.map((book) => {
-            return <BookItem {...book} />;
-          })}
-      </div>
-    );
-  }
+    getBooks();
+  }, [startBooks, successBooks, failBooks, token]);
 
-  getBooks = async () => {
-    try {
-      this.props.startBooks();
+  if (error !== null) {
+    const errorType = error.response.data.error;
 
-      await sleep(2000);
-
-      const response = await axios.get('https://api.marktube.tv/v1/book', {
-        headers: {
-          Authorization: `Bearer ${this.props.token}`,
-        },
-      });
-
-      this.props.successBooks(response.data);
-    } catch (error) {
-      console.log(error);
-      this.props.failBooks(error);
+    if (errorType === 'INVALID_TOKEN') {
+      return (
+        <div>
+          <h1>Book List {loading && <LoadingOutlined />}</h1>
+          <p>
+            유효하지 않은 토큰 입니다.{' '}
+            <Button
+              shape="circle"
+              icon={<ReloadOutlined />}
+              onClick={this.getBooks}
+            />
+          </p>
+        </div>
+      );
     }
-  };
-
-  async componentDidMount() {
-    await this.getBooks();
   }
+
+  return (
+    <div>
+      <h1>Book List {loading && <LoadingOutlined />}</h1>
+      {books.length === 0 && <p>데이터가 없습니다.</p>}
+      {books.length !== 0 &&
+        books.map((book) => {
+          return <BookItem {...book} />;
+        })}
+    </div>
+  );
 }
