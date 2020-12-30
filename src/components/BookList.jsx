@@ -7,13 +7,13 @@ import BookItem from './BookItem';
 
 export default class BookList extends React.Component {
   state = {
-    books: [],
     loading: false,
     error: null,
   };
 
   render() {
-    const { books, loading, error } = this.state;
+    const { loading, error } = this.state;
+    const { books } = this.props;
 
     if (error !== null) {
       const errorType = error.response.data.error;
@@ -61,7 +61,9 @@ export default class BookList extends React.Component {
       });
 
       // 받은 책 리스트로 다시 랜더 해줘 <= state
-      this.setState({ books: response.data, loading: false });
+      this.setState({ loading: false });
+      // 리덕스한테 books: response.data, 를 넣어주기
+      this.props.setBooks(response.data);
     } catch (error) {
       console.log(error);
       this.setState({ loading: false, error });
