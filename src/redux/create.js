@@ -7,8 +7,18 @@ import { createBrowserHistory } from 'history';
 
 export const history = createBrowserHistory();
 
+/*
+{
+  books: {books: [], loading: false, error: null},
+  auth: {token: [], loading: false, error: null}
+}
+*/
+
 const store = createStore(
   reducer,
+  {
+    auth: { token: localStorage.getItem('token'), loading: false, error: null },
+  },
   composeWithDevTools(
     applyMiddleware(thunk.withExtraArgument(history), promise),
   ),
