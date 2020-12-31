@@ -51,13 +51,13 @@ const bookFail = (error) => ({
 });
 
 // thunk
-export const getBooksThunk = (token) => async (dispatch, getState) => {
+export const getBooksThunk = () => async (dispatch, getState, history) => {
   try {
     dispatch(bookStart());
 
     await sleep(2000);
 
-    const books = await BookService.getBooks(token);
+    const books = await BookService.getBooks(getState().auth.token);
 
     dispatch(bookSuccess(books));
   } catch (error) {

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BookList from '../components/BookList';
-import { getBooksPromise } from '../redux/modules/books';
+import { getBooksThunk } from '../redux/modules/books';
 
-export default function BookListContainer({ token }) {
+export default function BookListContainer() {
   // redux 와의 연결고리
   const books = useSelector((state) => state.books.books);
   const loading = useSelector((state) => state.books.loading);
@@ -12,8 +12,8 @@ export default function BookListContainer({ token }) {
   const dispatch = useDispatch();
 
   const getBooks = useCallback(async () => {
-    dispatch(getBooksPromise(token));
-  }, [dispatch, token]);
+    dispatch(getBooksThunk());
+  }, [dispatch]);
 
   return (
     <BookList

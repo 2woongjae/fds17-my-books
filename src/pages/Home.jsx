@@ -1,13 +1,13 @@
+import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import withToken from '../hocs/withToken';
 import BookListContainer from '../containers/BookListContainer';
 
-function Home({ token }) {
-  console.log(token);
+function Home() {
+  const token = useSelector((state) => state.auth.token);
   if (token === null) {
     return <Redirect to="/signin" />;
   }
-  return <BookListContainer token={token} />;
+  return <BookListContainer />;
 }
 
-export default withToken(Home);
+export default Home;
