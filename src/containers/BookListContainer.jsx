@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BookList from '../components/BookList';
-import { getBooksPromise } from '../redux/actions';
+import { getBooksPromise } from '../redux/modules/books';
 
 export default function BookListContainer({ token }) {
   // redux 와의 연결고리

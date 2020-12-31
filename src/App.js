@@ -9,7 +9,7 @@ import NotFound from './pages/NotFound';
 import { Provider } from 'react-redux';
 
 // redux
-import store from './redux/store';
+import store from './redux/create';
 
 function App() {
   return (
