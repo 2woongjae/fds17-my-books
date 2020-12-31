@@ -3,6 +3,7 @@ import withToken from '../hocs/withToken';
 import BookListContainer from '../containers/BookListContainer';
 
 function Home({ token }) {
+  console.log(token);
   if (token === null) {
     return <Redirect to="/signin" />;
   }

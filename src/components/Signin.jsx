@@ -1,9 +1,6 @@
 import React from 'react';
 import { Row, Col, Input, Button } from 'antd';
 import styles from './Signin.module.css';
-import axios from 'axios';
-import { withRouter } from 'react-router-dom';
-import { sleep } from '../utils';
 
 // class 컴포넌트에서 사용하는 createRef 함수
 class Signin extends React.Component {
@@ -11,11 +8,11 @@ class Signin extends React.Component {
 
   state = {
     email: '',
-    loading: false,
   };
 
   render() {
-    const { email, loading } = this.state;
+    const { email } = this.state;
+    const { loading } = this.props;
 
     const isEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(email);
 
@@ -82,45 +79,12 @@ class Signin extends React.Component {
     );
   }
 
-  click = async () => {
+  click = () => {
     const { email } = this.state;
     const password = this._password.current.input.value;
     console.log('clicked', email, password);
 
-    // 서버에다가 이메일 패스워드 보내서 인증된 사용자인지 체크
-    // axios
-    //   .post('https://api.marktube.tv/v1/me', {
-    //     email,
-    //     password,
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
-    try {
-      // 호출 시작 => 로딩 시작
-      this.setState({ loading: true });
-      const response = await axios.post('https://api.marktube.tv/v1/me', {
-        email,
-        password,
-      });
-      // sleep
-      await sleep(2000);
-      this.setState({ loading: false });
-      // 호출 완료 (정상) => 로딩 끝
-      console.log(response.data.token);
-      // 토큰을 브라우저 어딘가에 저장한다.
-      localStorage.setItem('token', response.data.token);
-      // 페이지를 이동한다.
-      this.props.history.push('/');
-    } catch (error) {
-      this.setState({ loading: false });
-      // 호출 완료 (에러) => 로딩 끝
-      console.log(error);
-    }
+    this.props.signin(email, password);
   };
 
   change = (e) => {
@@ -128,4 +92,4 @@ class Signin extends React.Component {
   };
 }
 
-export default withRouter(Signin);
+export default Signin;

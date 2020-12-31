@@ -1,4 +1,4 @@
-import axios from 'axios';
+import AuthService from '../../services/AuthService';
 import { sleep } from '../../utils';
 
 // namespace
@@ -32,19 +32,23 @@ export const signinSuccess = (token) => ({ type: SUCCESS, token });
 export const signinFail = (error) => ({ type: FAIL, error });
 
 // thunk
-export const signinThunk = (email, password) => async (dispatch, getState) => {
+export const signinThunk = (email, password) => async (
+  dispatch,
+  getState,
+  history,
+) => {
   try {
     dispatch(signinStart());
-    const response = await axios.post('https://api.marktube.tv/v1/me', {
-      email,
-      password,
-    });
+
+    const token = await AuthService.login(email, password);
     await sleep(2000);
-    const token = response.data.token;
+
     localStorage.setItem('token', token); // 토큰을 브라우저 어딘가에 저장한다.
     dispatch(signinSuccess(token));
 
-    // this.props.history.push('/'); // 페이지를 이동한다.
+    console.log(localStorage.getItem('token'), history);
+
+    history.push('/'); // 페이지를 이동한다.
   } catch (error) {
     console.log(error);
     dispatch(signinFail(error));
