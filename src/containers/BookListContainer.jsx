@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BookList from '../components/BookList';
-import { getBooksThunk } from '../redux/modules/books';
+import { getBooksSagaStart } from '../redux/modules/books';
 
 export default function BookListContainer() {
   // redux 와의 연결고리
@@ -12,7 +12,7 @@ export default function BookListContainer() {
   const dispatch = useDispatch();
 
   const getBooks = useCallback(async () => {
-    dispatch(getBooksThunk());
+    dispatch(getBooksSagaStart());
   }, [dispatch]);
 
   return (

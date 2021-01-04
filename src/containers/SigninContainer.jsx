@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Signin from '../components/Signin';
-import { signinThunk } from '../redux/modules/auth';
+import { signinSagaStart } from '../redux/modules/auth';
 
 const SigninContainer = () => {
   const loading = useSelector((state) => state.auth.loading);
@@ -10,7 +10,7 @@ const SigninContainer = () => {
   const dispatch = useDispatch();
   const signin = useCallback(
     (email, password) => {
-      dispatch(signinThunk(email, password));
+      dispatch(signinSagaStart(email, password));
     },
     [dispatch],
   );

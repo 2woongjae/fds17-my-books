@@ -1,5 +1,5 @@
-import { sleep } from '../../utils';
 import BookService from '../../services/BookService';
+import { call, put, delay, takeEvery, select } from 'redux-saga/effects';
 
 // namespace
 const namespace = 'fds17-my-books/books';
@@ -50,24 +50,26 @@ const bookFail = (error) => ({
   error,
 });
 
-// thunk
-export const getBooksThunk = () => async (dispatch, getState, history) => {
+const BOOKS_SAGA = namespace + '/BOOKS_SAGA';
+
+// saga
+function* getBooksSaga() {
   try {
-    dispatch(bookStart());
+    yield put(bookStart());
+    yield delay(2000);
 
-    await sleep(2000);
+    const token = yield select((state) => state.auth.token);
+    const books = yield call(BookService.getBooks, token);
 
-    const books = await BookService.getBooks(getState().auth.token);
-
-    dispatch(bookSuccess(books));
+    yield put(bookSuccess(books));
   } catch (error) {
     console.log(error);
-    dispatch(bookFail(error));
+    yield put(bookFail(error));
   }
-};
+}
 
-// promise
-export const getBooksPromise = (token) => ({
-  type: BOOKS,
-  payload: BookService.getBooks(token),
-});
+export const getBooksSagaStart = () => ({ type: BOOKS_SAGA });
+
+export function* booksSaga() {
+  yield takeEvery(BOOKS_SAGA, getBooksSaga);
+}

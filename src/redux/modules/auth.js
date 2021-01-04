@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
+import { delay, put, takeEvery, call } from 'redux-saga/effects';
 import AuthService from '../../services/AuthService';
-import { sleep } from '../../utils';
 
 // namespace
 const namespace = 'fds17-my-books/auth';
@@ -32,25 +32,31 @@ export const signinStart = () => ({ type: START });
 export const signinSuccess = (token) => ({ type: SUCCESS, token });
 export const signinFail = (error) => ({ type: FAIL, error });
 
-// thunk
-export const signinThunk = (email, password) => async (
-  dispatch,
-  getState,
-  history,
-) => {
-  try {
-    dispatch(signinStart());
+// saga
+const SIGNIN_SAGA = namespace + '/SIGNIN_SAGA';
+export const signinSagaStart = (email, password) => ({
+  type: SIGNIN_SAGA,
+  payload: { email, password },
+});
 
-    const token = await AuthService.login(email, password);
-    await sleep(2000);
+export function* signinSaga(action) {
+  try {
+    yield put(signinStart());
+
+    const { email, password } = action.payload;
+
+    const token = yield call(AuthService.login, email, password);
+    yield delay(2000);
 
     localStorage.setItem('token', token); // 토큰을 브라우저 어딘가에 저장한다.
-    dispatch(signinSuccess(token));
-
-    // history.push('/'); // 페이지를 이동한다.
-    dispatch(push('/'));
+    yield put(signinSuccess(token));
+    yield put(push('/'));
   } catch (error) {
     console.log(error);
-    dispatch(signinFail(error));
+    yield put(signinFail(error));
   }
-};
+}
+
+export function* authSaga() {
+  yield takeEvery(SIGNIN_SAGA, signinSaga);
+}
