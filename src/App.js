@@ -9,7 +9,14 @@ import NotFound from './pages/NotFound';
 import { Provider } from 'react-redux';
 
 // redux
-import store, { history } from './redux/create';
+import create from './redux/create';
+import { createBrowserHistory } from 'history';
+
+// 1. 히스토리를 생성
+const history = createBrowserHistory();
+
+// 2. 스토어를 생성
+const store = create(history);
 
 function App() {
   return (

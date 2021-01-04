@@ -48,7 +48,10 @@ export const signinThunk = (email, password) => async (
 
     console.log(localStorage.getItem('token'), history);
 
+    // ['/', 'signin', '/about', '/']
+
     history.push('/'); // 페이지를 이동한다.
+    // dispatch(라우팅을 변경하는 액션 생성자 함수를 실행);
   } catch (error) {
     console.log(error);
     dispatch(signinFail(error));
