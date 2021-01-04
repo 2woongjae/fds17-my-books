@@ -1,3 +1,4 @@
+import { push } from 'connected-react-router';
 import AuthService from '../../services/AuthService';
 import { sleep } from '../../utils';
 
@@ -46,12 +47,8 @@ export const signinThunk = (email, password) => async (
     localStorage.setItem('token', token); // 토큰을 브라우저 어딘가에 저장한다.
     dispatch(signinSuccess(token));
 
-    console.log(localStorage.getItem('token'), history);
-
-    // ['/', 'signin', '/about', '/']
-
-    history.push('/'); // 페이지를 이동한다.
-    // dispatch(라우팅을 변경하는 액션 생성자 함수를 실행);
+    // history.push('/'); // 페이지를 이동한다.
+    dispatch(push('/'));
   } catch (error) {
     console.log(error);
     dispatch(signinFail(error));

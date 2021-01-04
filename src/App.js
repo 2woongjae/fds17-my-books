@@ -1,4 +1,4 @@
-import { Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 
 // pages
@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 // redux
 import create from './redux/create';
 import { createBrowserHistory } from 'history';
+import { ConnectedRouter } from 'connected-react-router';
 
 // 1. 히스토리를 생성
 const history = createBrowserHistory();
@@ -22,13 +23,13 @@ function App() {
   return (
     <ErrorBoundary FallbackComponent={Error}>
       <Provider store={store}>
-        <Router history={history}>
+        <ConnectedRouter history={history}>
           <Switch>
             <Route path="/signin" component={Signin} />
             <Route path="/" exact component={Home} />
             <Route component={NotFound} />
           </Switch>
-        </Router>
+        </ConnectedRouter>
       </Provider>
     </ErrorBoundary>
   );
