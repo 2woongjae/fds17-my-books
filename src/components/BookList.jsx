@@ -38,7 +38,7 @@ export default function BookList({ books, loading, error, getBooks }) {
       {books.length === 0 && <p>데이터가 없습니다.</p>}
       {books.length !== 0 &&
         books.map((book) => {
-          return <BookItem {...book} />;
+          return <BookItem {...book} key={book.bookId} />;
         })}
     </div>
   );
